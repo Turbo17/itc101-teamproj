@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Video Edits</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-5px, 5px); }
+      40% { transform: translate(5px, -5px); }
+      60% { transform: translate(-5px, -5px); }
+      80% { transform: translate(5px, 5px); }
+      100% { transform: translate(0); }
+    }
+    .glitch-effect {
+      animation: glitch 0.1s infinite;
+      background-color: black;
+      color: red;
+      font-size: 2rem;
+      text-align: center;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem("authenticated") !== "true") {
+      const glitchDiv = document.createElement('div');
+      glitchDiv.className = 'glitch-effect';
+      glitchDiv.innerText = 'ACCESS DENIED';
+      document.body.appendChild(glitchDiv);
+
+      setTimeout(() => {
+        document.body.innerHTML = `
+          <style>
+            body {
+              background-color: #0a0f1c;
+              color: #e6f1ff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              font-family: monospace;
+              text-align: center;
+              margin: 0;
+            }
+            .error-box {
+              background-color: #1e2e3f;
+              padding: 2rem;
+              border-radius: 12px;
+              box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+            }
+          </style>
+          <div class='error-box'>
+            <h1>Error 403: Forbidden</h1>
+            <p>Nice try, buddy. But you're not authorized to be here... yet.</p>
+            <p><a href="login.html" style="color:#50fa7b;">Return to Login</a></p>
+          </div>
+        `;
+      }, 1500);
+    }
+  
+let _secretBuffer = "";
+
+  document.addEventListener("keydown", (e) => {
+    _secretBuffer += e.key.toLowerCase();
+
+    if (_secretBuffer.length > 9) {
+      _secretBuffer = _secretBuffer.slice(-9);
+    }
+
+    if (_secretBuffer === "flagcheck") {
+      window.location.href = "flag-checker.html";
+    }
+  });
+
+  </script>
+
+  <header>
+    <h1>IT&C CTF Challenge</h1>
+    <p>A showcase of my visual and auditory work.</p>
+  </header>
+
+  <main>
+    <section class="gallery">
+      <article class="video-card">
+        <h2>Project Alpha</h2>
+        <video controls>
+          <source src="video/ProjectAlpha.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <p>Dynamic transitions with anxiety inducing media. One of my favorites. A is for Anxiety!</p>
+      </article>
+
+      <article class="video-card">
+        <h2>Echo Pulse</h2>
+        <audio controls>
+          <source src="audio/echo_pulse.wav" type="audio/wav" />
+          Your browser does not support the audio element.
+        </audio>
+        <p>An audio-driven piece that really resonates... if you know how to look, that is.</p>
+      </article>
+
+      <article class="video-card">
+        <h2>Neon Flow</h2>
+        <video controls>
+          <source src="video/neon_flow.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <p>A fast-paced edit with glitch vibes.</p>
+      </article>
+    </section>
+
+    <div style="text-align:center; margin-top: 2rem;">
+      <button onclick="logout()" style="padding: 0.5rem 1rem; background-color: #76c7c0; color: #0a0f1c; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Logout</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 by Me. Totally just a regular portfolio site.</p>
+  </footer>
+
+  <!-- Hint Bubble and Panel -->
+  <div class="hint-bubble" onclick="toggleHint()">?</div>
+  <div class="hint-panel" id="hintPanel">
+    <h3>Hint</h3>
+    <p>Still digging around? You can always just listen to videos and watch my music projects.</p>
+  </div>
+
+  <script>
+    function toggleHint() {
+      const panel = document.getElementById("hintPanel");
+      panel.style.display = panel.style.display === "block" ? "none" : "block";
+    }
+
+    function logout() {
+      sessionStorage.removeItem("authenticated");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
