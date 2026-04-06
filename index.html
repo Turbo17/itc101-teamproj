@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto CTF - Easy</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>🔐 Welcome to the Crypto CTF!</h1>
+<p>Find the flag by solving these crypto challenges.</p>
+
+<div class="challenge">
+<h2>Challenge 1: Caesar Cipher</h2>
+<p>Encrypted message: <code>iodj{grpsdf_lv_grqh}</code></p>
+<p class="hint">Hint: Shift letters by 3</p>
+<input type="text" id="c1" placeholder="Enter the flag">
+<button onclick="checkFlag('c1')">Submit</button>
+<p class="result" id="r1"></p>
+</div>
+
+<div class="challenge">
+<h2>Challenge 2: Base64</h2>
+<p>Encoded message: <code>ZmxhZ3tkb21wYWNfaXNfZG9uZX0=</code></p>
+<p class="hint">Hint: Decode using Base64</p>
+<input type="text" id="c2" placeholder="Enter the flag">
+<button onclick="checkFlag('c2')">Submit</button>
+<p class="result" id="r2"></p>
+</div>
+
+<div class="challenge">
+<h2>Challenge 3: Reverse String</h2>
+<p>Reversed message: <code>}enod_si_capmod{galf</code></p>
+<p class="hint">Hint: Reverse the string</p>
+<input type="text" id="c3" placeholder="Enter the flag">
+<button onclick="checkFlag('c3')">Submit</button>
+<p class="result" id="r3"></p>
+</div>
+
+<div class="challenge">
+<h2>Challenge 4: Hex</h2>
+<p>Hex message: <code>666c61677b646f6d7061635f69735f646f6e657d</code></p>
+<p class="hint">Hint: Convert from hexadecimal to text</p>
+<input type="text" id="c4" placeholder="Enter the flag">
+<button onclick="checkFlag('c4')">Submit</button>
+<p class="result" id="r4"></p>
+</div>
+
+<div id="congrats" style="display:none;">
+<h2>🎉 Congratulations! You solved all the challenges!</h2>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
