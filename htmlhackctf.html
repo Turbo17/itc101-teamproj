@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTF Challenge</title>
+<!-- FLAG_5: CTF{m3ta_tag_spy} -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap');
+
+  :root {
+    --green: #00ff88;
+    --dim-green: #00aa55;
+    --dark: #0a0f0a;
+    --panel: #0d1410;
+    --border: #1a2e1a;
+    --text: #c8f0d0;
+    --muted: #4a7a55;
+    --red: #ff4444;
+    --amber: #ffaa00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.02) 2px, rgba(0,255,136,0.02) 4px);
+  }
+
+  .container { max-width: 760px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeIn 0.8s ease;
+  }
+
+  .header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 20px rgba(0,255,136,0.4);
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  .scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .score-item { text-align: center; }
+  .score-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.6rem;
+    color: var(--green);
+  }
+  .score-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+
+  /* Challenges */
+  .challenge {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+    animation: slideIn 0.5s ease both;
+    transition: border-color 0.3s;
+  }
+
+  .challenge.solved { border-color: var(--dim-green); }
+  .challenge.solved .ch-header { background: rgba(0,255,136,0.06); }
+
+  .ch-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .ch-header:hover { background: rgba(0,255,136,0.04); }
+
+  .ch-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    color: var(--muted);
+    min-width: 40px;
+  }
+
+  .ch-title { flex: 1; font-size: 0.95rem; color: var(--text); }
+
+  .ch-pts {
+    font-size: 0.75rem;
+    color: var(--amber);
+    border: 1px solid rgba(255,170,0,0.3);
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .challenge.solved .ch-pts { color: var(--green); border-color: rgba(0,255,136,0.3); }
+
+  .ch-status {
+    font-size: 0.7rem;
+    min-width: 60px;
+    text-align: right;
+    color: var(--muted);
+  }
+  .challenge.solved .ch-status { color: var(--green); }
+
+  .ch-body {
+    padding: 1.25rem;
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .ch-body.open { display: block; }
+
+  .ch-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .hint-box {
+    background: rgba(0,255,136,0.04);
+    border-left: 2px solid var(--dim-green);
+    padding: 0.6rem 0.9rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .flag-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    padding: 8px 12px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus { border-color: var(--dim-green); }
+  input[type="text"]::placeholder { color: var(--muted); }
+
+  button {
+    background: transparent;
+    border: 1px solid var(--dim-green);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    padding: 8px 16px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  button:hover { background: rgba(0,255,136,0.08); }
+  button:active { transform: scale(0.97); }
+
+  .msg {
+    font-size: 0.78rem;
+    margin-top: 8px;
+    min-height: 16px;
+  }
+  .msg.ok { color: var(--green); }
+  .msg.err { color: var(--red); }
+
+  /* Special challenge elements */
+  #invisible-text {
+    color: var(--dark);
+    background: var(--dark);
+    font-size: 0.78rem;
+    margin-top: 0.5rem;
+    user-select: none;
+    letter-spacing: 0.02em;
+  }
+
+  #fake-btn {
+    display: inline-block;
+    margin-top: 0.75rem;
+    background: rgba(255,170,0,0.1);
+    border: 1px solid rgba(255,170,0,0.3);
+    color: var(--amber);
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    border-radius: 2px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  code {
+    background: rgba(0,255,136,0.08);
+    color: var(--green);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 0.85em;
+  }
+
+  /* Win screen */
+  #win-screen {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+    animation: fadeIn 1s ease;
+  }
+
+  #win-screen h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    color: var(--green);
+    text-shadow: 0 0 30px rgba(0,255,136,0.5);
+    margin-bottom: 1rem;
+  }
+
+  #win-screen p { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
+
+  .footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- CHALLENGE 3 HIDDEN FLAG — look in comments! -->
+<!-- CTF{html_c0mm3nt_d1gg3r} -->
+
+<div class="container">
+
+  <div class="header">
+    <h1>// HACK_CTF</h1>
+    <p>use your browser devtools &mdash; inspect, console, storage, and more</p>
+    <div class="scoreboard">
+      <div class="score-item">
+        <div class="score-num" id="solved-count">0</div>
+        <div class="score-label">SOLVED</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="total-pts">0</div>
+        <div class="score-label">POINTS</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num">6</div>
+        <div class="score-label">TOTAL</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHALLENGE 1 -->
+  <div class="challenge" id="ch-1" style="animation-delay:0.1s">
+    <div class="ch-header" onclick="toggle(1)">
+      <span class="ch-num">01</span>
+      <span class="ch-title">inspector gadget</span>
+      <span class="ch-pts">100 pts</span>
+      <span class="ch-status" id="st-1">[ unsolved ]</span>
+    </div>
+    <div class="ch-body" id="body-1">
+      <p class="ch-desc">
+        Every webpage has hidden structure. Open DevTools (F12 or right-click → Inspect),
+        go to the <strong>Elements</strong> tab, and hunt through the HTML.
+        Find an element with a secret <code>data-</code> attribute.
+      </p>
+      <div class="hint-box">hint: look for an element with id="vault" deep in the DOM</div>
+      <div class="flag-row">
+        <input type="text" id="f1" placeholder="CTF{...}" />
+        <button onclick="submit(1)">submit</button>
+      </div>
+      <p class="msg" id="m1"></p>
+    </div>
+  </div>
+
+  <!-- CHALLENGE 2 -->
+  <div class="challenge" id="ch-2" style="animation-delay:0.2s">
+    <div class="ch-header" onclick="toggle(2)">
+      <span class="ch-num">02</span>
+      <span class="ch-title">console cowboy</span>
+      <span class="ch-pts">100 pts</span>
+      <span class="ch-status" id="st-2">[ unsolved ]</span>
+    </div>
+    <div class="ch-body" id="body-2">
+      <p class="ch-desc">
+        Open the browser Console (F12 → Console tab). A function is waiting for you.
+        Call it to retrieve the flag.
+      </p>
+      <div class="hint-box">hint: type <code>getFlag()</code> in the console and press enter</div>
+      <div class="flag-row">
+        <input type="text" id="f2" placeholder="CTF{...}" />
+        <button onclick="submit(2)">submit</button>
+      </div>
+      <p class="msg" id="m2"></p>
+    </div>
+  </div>
+
+  <!-- CHALLENGE 3 -->
+  <div class="challenge" id="ch-3" style="animation-delay:0.3s">
+    <div class="ch-header" onclick="toggle(3)">
+      <span class="ch-num">03</span>
+      <span class="ch-title">comment section</span>
+      <span class="ch-pts">150 pts</span>
+      <span class="ch-status" id="st-3">[ unsolved ]</span>
+    </div>
+    <div class="ch-body" id="body-3">
+      <p class="ch-desc">
+        Developers sometimes leave notes in the source code they forget to remove.
+        View the raw page source (Ctrl+U or Cmd+U) and search for something suspicious.
+      </p>
+      <div class="hint-box">hint: use Ctrl+F in the source view to search for "CTF{"</div>
+      <div class="flag-row">
+        <input type="text" id="f3" placeholder="CTF{...}" />
+        <button onclick="submit(3)">submit</button>
+      </div>
+      <p class="msg" id="m3"></p>
+    </div>
+  </div>
+
+  <!-- CHALLENGE 4 -->
+  <div class="challenge" id="ch-4" style="animation-delay:0.4s">
+    <div class="ch-header" onclick="toggle(4)">
+      <span class="ch-num">04</span>
+      <span class="ch-title">style detective</span>
+      <span class="ch-pts">150 pts</span>
+      <span class="ch-status" id="st-4">[ unsolved ]</span>
+    </div>
+    <div class="ch-body" id="body-4">
+      <p class="ch-desc">
+        CSS can hide things from plain sight — but not from DevTools.
+        There's text below that's been made invisible. Find it in the Elements panel
+        and change its color to reveal the flag.
+      </p>
+      <div class="hint-box">hint: find the element with id="invisible-text", then in the Styles panel change <code>color</code> to <code>white</code></div>
+      <p id="invisible-text">CTF{css_c4nt_h1d3_fr0m_m3}</p>
+      <div class="flag-row" style="margin-top:1rem">
+        <input type="text" id="f4" placeholder="CTF{...}" />
+        <button onclick="submit(4)">submit</button>
+      </div>
+      <p class="msg" id="m4"></p>
+    </div>
+  </div>
+
+  <!-- CHALLENGE 5 -->
+  <div class="challenge" id="ch-5" style="animation-delay:0.5s">
+    <div class="ch-header" onclick="toggle(5)">
+      <span class="ch-num">05</span>
+      <span class="ch-title">meta spy</span>
+      <span class="ch-pts">200 pts</span>
+      <span class="ch-status" id="st-5">[ unsolved ]</span>
+    </div>
+    <div class="ch-body" id="body-5">
+      <p class="ch-desc">
+        Web pages have metadata hidden in the <code>&lt;head&gt;</code> section that users
+        never see. Open DevTools → Elements and expand the <code>&lt;head&gt;</code> tag.
+        Look through the <code>&lt;meta&gt;</code> tags and comments.
+      </p>
+      <div class="hint-box">hint: the flag is inside an HTML comment in the &lt;head&gt; section</div>
+      <div class="flag-row">
+        <input type="text" id="f5" placeholder="CTF{...}" />
+        <button onclick="submit(5)">submit</button>
+      </div>
+      <p class="msg" id="m5"></p>
+    </div>
+  </div>
+
+  <!-- CHALLENGE 6 -->
+  <div class="challenge" id="ch-6" style="animation-delay:0.6s">
+    <div class="ch-header" onclick="toggle(6)">
+      <span class="ch-num">06</span>
+      <span class="ch-title">storage hoarder</span>
+      <span class="ch-pts">300 pts</span>
+      <span class="ch-status" id="st-6">[ unsolved ]</span>
+    </div>
+    <div class="ch-body" id="body-6">
+      <p class="ch-desc">
+        Browsers store data beyond just cookies. Open DevTools → Application tab →
+        Local Storage → select the page URL. Look for a suspicious key.
+      </p>
+      <div class="hint-box">hint: look for a key named <code>top_secret</code> in Local Storage</div>
+      <div class="flag-row">
+        <input type="text" id="f6" placeholder="CTF{...}" />
+        <button onclick="submit(6)">submit</button>
+      </div>
+      <p class="msg" id="m6"></p>
+    </div>
+  </div>
+
+  <div id="win-screen">
+    <h2>// ACCESS GRANTED</h2>
+    <p>you've solved all 6 challenges.<br>1000 points. full system access. you're in.<br><br>
+    <span style="color:var(--green)">share this file with friends and see who can solve it fastest.</span></p>
+  </div>
+
+  <div class="footer">hack_ctf &mdash; open source &mdash; share freely</div>
+
+</div>
+
+<!-- CHALLENGE 1 VAULT -->
+<div id="vault" data-flag="CTF{d4ta_4ttr1but3_h4ck3r}" style="display:none" aria-hidden="true"></div>
+
+<script>
+  localStorage.setItem('top_secret', 'CTF{l0c4l_st0r4g3_n1nj4}');
+
+  window.getFlag = function() {
+    var f = 'CTF{c0ns0l3_c0wb0y_r1d3s_4g41n}';
+    console.log('%c ' + f + ' ', 'background:#0a0f0a;color:#00ff88;font-family:monospace;font-size:15px;padding:6px 12px;border:1px solid #00aa55;');
+    return f;
+  };
+
+  var FLAGS = {
+    1: 'CTF{d4ta_4ttr1but3_h4ck3r}',
+    2: 'CTF{c0ns0l3_c0wb0y_r1d3s_4g41n}',
+    3: 'CTF{html_c0mm3nt_d1gg3r}',
+    4: 'CTF{css_c4nt_h1d3_fr0m_m3}',
+    5: 'CTF{m3ta_tag_spy}',
+    6: 'CTF{l0c4l_st0r4g3_n1nj4}'
+  };
+
+  var PTS = { 1:100, 2:100, 3:150, 4:150, 5:200, 6:300 };
+  var solved = {};
+
+  function toggle(n) {
+    var b = document.getElementById('body-' + n);
+    b.classList.toggle('open');
+  }
+
+  function submit(n) {
+    var val = document.getElementById('f' + n).value.trim();
+    var msg = document.getElementById('m' + n);
+    if (solved[n]) {
+      msg.className = 'msg ok';
+      msg.textContent = 'already solved!';
+      return;
+    }
+    if (val === FLAGS[n]) {
+      solved[n] = true;
+      msg.className = 'msg ok';
+      msg.textContent = '>> flag accepted! +' + PTS[n] + ' pts';
+      document.getElementById('ch-' + n).classList.add('solved');
+      document.getElementById('st-' + n).textContent = '[ solved ]';
+      updateScore();
+    } else if (val === '') {
+      msg.className = 'msg err';
+      msg.textContent = 'enter a flag first.';
+    } else {
+      msg.className = 'msg err';
+      msg.textContent = '>> incorrect. keep digging.';
+    }
+  }
+
+  function updateScore() {
+    var count = Object.keys(solved).length;
+    var pts = 0;
+    for (var k in solved) pts += PTS[k];
+    document.getElementById('solved-count').textContent = count;
+    document.getElementById('total-pts').textContent = pts;
+    if (count === 6) {
+      setTimeout(function() {
+        document.getElementById('win-screen').style.display = 'block';
+        document.getElementById('win-screen').scrollIntoView({ behavior: 'smooth' });
+      }, 600);
+    }
+  }
+
+  document.querySelectorAll('input[type=text]').forEach(function(el) {
+    el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        var n = el.id.replace('f', '');
+        submit(parseInt(n));
+      }
+    });
+  });
+
+  toggle(1);
+</script>
+</body>
+</html>
