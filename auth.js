@@ -1,6 +1,6 @@
 // auth.js
 let attemptsRemaining = 10;
-const lockoutTime = 60; // seconds
+const lockoutTime = 60;
 
 function toggleHint() {
   const panel = document.getElementById("hintPanel");
@@ -26,15 +26,14 @@ function handleLogin(event) {
   const loginBox = document.getElementById("loginBox");
   const errorMsg = document.getElementById("errorMsg");
   const attemptsText = document.getElementById("attempts");
+  const expectedUser = atob("YWRtaW4=");
   const hintPanel = document.getElementById("hintPanel");
   const finalWarning = document.getElementById("finalWarning");
   const accessBtn = document.getElementById("accessBtn");
   const overlay = document.getElementById("accessOverlay");
+  const expectedPass = atob("c3BlY3Ryb2dyYW0=");
   const accessText = document.getElementById("accessText");
   const body = document.body;
-
-  const expectedUser = atob("YWRtaW4=");
-  const expectedPass = atob("c3BlY3Ryb2dyYW0=");
 
   if (user === expectedUser && pass === expectedPass) {
     grantAccess();
@@ -87,7 +86,7 @@ function handleLogin(event) {
   }
 
   if (user === expectedUser) {
-    console.log("flag{not_the_real_flag_but_getting_warmer}");
+    console.log("flag{not_the_real_flag_but_getting_warmer_not_really_hahaha}");
   }
 }
 
@@ -105,7 +104,7 @@ function grantAccess() {
     if (i >= message.length) {
       clearInterval(typeInterval);
       setTimeout(() => {
-        window.location.href = "main.html";
+        window.location.href = "index.html";
       }, 800);
     }
   }, 100);
