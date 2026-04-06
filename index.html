@@ -8,7 +8,44 @@
 </head>
 
 <body>
+<script>
+  if (sessionStorage.getItem("authenticated") !== "true") {
+      const glitchDiv = document.createElement('div');
+      glitchDiv.className = 'glitch-effect';
+      glitchDiv.innerText = 'ACCESS DENIED';
+      document.body.appendChild(glitchDiv);
 
+      setTimeout(() => {
+        document.body.innerHTML = `
+          <style>
+            body {
+              background-color: #0a0f1c;
+              color: #e6f1ff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              font-family: monospace;
+              text-align: center;
+              margin: 0;
+            }
+            .error-box {
+              background-color: #1e2e3f;
+              padding: 2rem;
+              border-radius: 12px;
+              box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+            }
+          </style>
+          <div class='error-box'>
+            <h1>Error 403: Forbidden</h1>
+            <p>Nice try, buddy. But you're not authorized to be here... yet.</p>
+            <p><a href="login.html" style="color:#50fa7b;">Return to Login</a></p>
+          </div>
+        `;
+      }, 1500);
+    }
+  
+</script> 
 <h1>🔐 Welcome to the Crypto CTF!</h1>
 <p>Find the flag by solving these crypto challenges.</p>
 
