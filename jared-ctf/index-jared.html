@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jared CTF Challenge</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --flame-orange: #ff4500;
+      --flame-yellow: #ffcc00;
+      --flame-red: #cc1a00;
+      --dark: #080c12;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: #eef;
+      font-family: 'Share Tech Mono', monospace;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ══════════════════════════════════
+       FLAME CANVAS BACKGROUND
+    ══════════════════════════════════ */
+    #flame-canvas {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+
+    /* ══════════════════════════════════
+       HERO HEADER
+    ══════════════════════════════════ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      padding: 60px 24px;
+      text-align: center;
+    }
+
+    .flame-title {
+      font-family: 'Orbitron', 'Impact', sans-serif;
+      font-size: clamp(2rem, 9vw, 6rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(to top, #fff700 0%, #ff9900 22%, #ff4500 48%, #cc1a00 68%, #6b0000 88%, #180000 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: flicker 2.5s ease-in-out infinite;
+      margin-bottom: 40px;
+      line-height: 1.1;
+    }
+
+    @keyframes flicker {
+      0%,100% { filter: drop-shadow(0 0 10px rgba(255,100,0,.9)) drop-shadow(0 0 26px rgba(255,60,0,.7)) drop-shadow(0 0 50px rgba(200,30,0,.5)); }
+      30%      { filter: drop-shadow(0 0 18px rgba(255,160,0,1)) drop-shadow(0 0 40px rgba(255,90,0,.9)) drop-shadow(0 0 70px rgba(220,40,0,.7)); }
+      60%      { filter: drop-shadow(0 0 7px rgba(255,80,0,.8))  drop-shadow(0 0 18px rgba(255,40,0,.6)) drop-shadow(0 0 35px rgba(180,20,0,.4)); }
+    }
+
+    .hero-img {
+      width: min(680px, 88vw);
+      height: auto;
+      border-radius: 16px;
+      border: 2px solid rgba(255,69,0,0.4);
+      box-shadow: 0 0 60px rgba(255,50,0,0.35), 0 30px 80px rgba(0,0,0,.7);
+      display: block;
+    }
+
+    .intro {
+      max-width: 680px;
+      margin: 40px auto 0;
+      line-height: 1.8;
+      font-size: 1rem;
+      color: #b0c8e8;
+    }
+
+    .intro strong { color: #ffcc00; }
+
+    .warning-bar {
+      margin-top: 24px;
+      padding: 14px 24px;
+      border: 1px solid rgba(255,69,0,0.45);
+      border-radius: 10px;
+      background: rgba(255,40,0,0.08);
+      color: #ff7043;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .scroll-hint {
+      margin-top: 48px;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,150,50,0.6);
+      text-transform: uppercase;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 0.5; transform: translateY(0); }
+      50%      { opacity: 1;   transform: translateY(6px); }
+    }
+
+    /* ══════════════════════════════════
+       DIVIDER
+    ══════════════════════════════════ */
+    .divider {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ff4500 30%, #ffcc00 50%, #ff4500 70%, transparent);
+      box-shadow: 0 0 18px rgba(255,80,0,0.7);
+    }
+
+    /* ══════════════════════════════════
+       GUARDIAN SECTIONS
+    ══════════════════════════════════ */
+    .guardian-section {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 100px;
+      text-align: center;
+    }
+
+    /* Alternating side accents */
+    .guardian-section:nth-child(odd)  { background: linear-gradient(180deg, rgba(20,5,0,0) 0%, rgba(60,10,0,0.18) 50%, rgba(20,5,0,0) 100%); }
+    .guardian-section:nth-child(even) { background: linear-gradient(180deg, rgba(0,5,20,0) 0%, rgba(5,20,60,0.15) 50%, rgba(0,5,20,0) 100%); }
+
+    .guardian-name-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.6rem, 5vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: linear-gradient(to bottom, #ffffff 0%, #ffcc88 60%, #ff6600 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 36px;
+      filter: drop-shadow(0 0 12px rgba(255,120,30,0.5));
+    }
+
+    .guardian-img {
+      width: min(520px, 84vw);
+      height: auto;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+      margin: 0 auto 28px;
+      border: 2px solid rgba(255,80,0,0.3);
+      box-shadow: 0 0 40px rgba(255,60,0,0.25), 0 20px 60px rgba(0,0,0,0.65);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+
+    .guardian-img:hover {
+      box-shadow: 0 0 70px rgba(255,80,0,0.5), 0 24px 70px rgba(0,0,0,0.75);
+      transform: scale(1.015);
+    }
+
+    .guardian-flavor {
+      max-width: 480px;
+      color: #8eaac8;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin: 0 auto 40px;
+    }
+
+    .dl-link { display: inline-block; }
+
+    .dl-btn {
+      width: min(84vw, 504px);
+      height: auto;
+      border-radius: 18px;
+      display: block;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+      cursor: pointer;
+    }
+
+    .dl-link:hover .dl-btn {
+      transform: scale(1.05) translateY(-3px);
+      box-shadow: 0 18px 50px rgba(255,80,0,0.4);
+      filter: brightness(1.1);
+    }
+
+    /* ══════════════════════════════════
+       FOOTER
+    ══════════════════════════════════ */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 48px 32px 56px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+    }
+
+    .hint-label {
+      color: rgba(255,120,50,0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 10px;
+      font-size: 0.68rem;
+    }
+
+    .hint-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1rem, 3vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      background: linear-gradient(to right, #ff6600, #ffcc00, #ff6600);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(255,120,0,0.5));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Flame canvas -->
+  <canvas id="flame-canvas"></canvas>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <h1 class="flame-title">JARED CTF<br>CHALLENGE</h1>
+    <img class="hero-img" src="images/skeleton.jpg" alt="The Keeper of the Flag">
+    <div class="intro">
+      <p>Welcome, challenger. Your puzzle awaits you below</p>
+      <p style="margin-top:12px">Four guardians stand watch. Only one has the key.</p>
+      <div class="warning-bar">
+        ⚠️ &nbsp;WARNING: Only one of the download buttons is safe. The other three are malware.
+      </div>
+    </div>
+    <div class="scroll-hint">▼ &nbsp; Enter if you dare &nbsp; ▼</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── GUARDIAN I ── -->
+  <section class="guardian-section">
+    <div class="guardian-name-title">Guardian I</div>
+    <img class="guardian-img" src="images/lalala.jpg" alt="Guardian 1">
+    <p class="guardian-flavor">This guardian radiates joy and warmth. Suspiciously so. No one is this happy. Choose carefully.</p>
+    <a class="dl-link" href="https://media.tenor.com/xfooYTo-XbUAAAAe/smile-meme.png" target="_blank" aria-label="Download option 1">
+      <img class="dl-btn" src="images/blue_download.gif" alt="Download button blue">
+    </a>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── GUARDIAN II ── -->
+  <section class="guardian-section">
+    <div class="guardian-name-title">Guardian II</div>
+    <img class="guardian-img" src="images/cat.jpg" alt="Guardian 2">
+    <p class="guardian-flavor">Those eyes have witnessed countless failed attempts. It knows something you don't. It always does.</p>
+    <a class="dl-link" href="downloads/malware.bat" download="malware.bat" aria-label="Download option 2">
+      <img class="dl-btn" src="images/download_yellow.gif" alt="Download button yellow">
+    </a>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── GUARDIAN III ── -->
+  <section class="guardian-section">
+    <div class="guardian-name-title">Guardian III</div>
+    <img class="guardian-img" src="images/geeble.png" alt="Guardian 3">
+    <p class="guardian-flavor">Ancient. Unknowable. Geeble has guarded secrets since before the internet itself. Or maybe since last Tuesday.</p>
+    <a class="dl-link" href="downloads/geeble_zip_bomb.zip" download="geeble_zip_bomb.zip" aria-label="Download option 3">
+      <img class="dl-btn" src="images/BUTTON-d-2.png" alt="Download button green">
+    </a>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── GUARDIAN IV ── -->
+  <section class="guardian-section">
+    <div class="guardian-name-title">Guardian IV</div>
+    <img class="guardian-img" src="images/hercules.jpg" alt="Guardian 4 — Hercules">
+    <p class="guardian-flavor">Rest in peace, Hercules. A legend who crossed the rainbow bridge but never stopped guarding the flag. Good boy.</p>
+    <a class="dl-link" href="downloads/d0_NOt_L1St3n_To_th1S.mp3" download="d0_NOt_L1St3n_To_th1S.mp3" aria-label="Download option 4">
+      <img class="dl-btn" src="images/red_download.png" alt="Download button red">
+    </a>
+  </section>
+
+  <div class="divider"></div>
+
+  <footer>
+    <div class="hint-label">hint</div>
+    <div class="hint-text">click on the thing that resembles irish spring</div>
+  </footer>
+
+  <script>
+    // ── Particle flame canvas ──
+    const canvas = document.getElementById('flame-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const PARTICLE_COUNT = 140;
+    const particles = [];
+
+    function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+    class Flame {
+      constructor(x) { this.reset(x); }
+      reset(x) {
+        this.x    = x !== undefined ? x : randomBetween(0, canvas.width);
+        this.y    = canvas.height + randomBetween(0, 80);
+        this.vx   = randomBetween(-0.6, 0.6);
+        this.vy   = randomBetween(-2.8, -1.2);
+        this.life = 1;
+        this.decay = randomBetween(0.006, 0.016);
+        this.size = randomBetween(14, 46);
+        // colour stops: yellow → orange → red → transparent
+        const stops = [
+          { stop: 0,   color: `rgba(255,255,80,` },
+          { stop: 0.3, color: `rgba(255,140,0,`  },
+          { stop: 0.7, color: `rgba(220,30,0,`   },
+          { stop: 1,   color: `rgba(80,0,0,`      },
+        ];
+        this.stops = stops;
+      }
+      update() {
+        this.x    += this.vx + Math.sin(this.y * 0.04) * 0.4;
+        this.y    += this.vy;
+        this.life -= this.decay;
+        this.size *= 0.993;
+        if (this.life <= 0) this.reset();
+      }
+      draw() {
+        const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+        for (const s of this.stops) {
+          g.addColorStop(s.stop, s.color + (this.life * (s.stop === 0 ? 0.9 : s.stop === 1 ? 0 : 0.75)) + ')');
+        }
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+      }
+    }
+
+    // Spread flames across full width in clusters
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      // cluster near bottom edge with some spread
+      const x = randomBetween(0, window.innerWidth);
+      const p = new Flame(x);
+      p.y = canvas.height - randomBetween(0, canvas.height * 0.6); // stagger heights at start
+      p.life = randomBetween(0.1, 1);
+      particles.push(p);
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        p.update();
+        p.draw();
+      }
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>
