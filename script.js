@@ -1,1 +1,44 @@
-const _0xeshc0="\x66\x6c\x61\x67\x7b\x64\x6f\x6d\x70\x61\x63\x5f\x69\x73\x5f\x64\x6f\x6e\x65\x7d";let _0x75351={c1:false,c2:false,c3:false,c4:false};function _0xmgo82(challengeId){const _0xc8be3=document.getElementById(challengeId).value.trim().toLowerCase();const _0xz4i34=document.getElementById("\x72"+challengeId[0x1]);if(_0xc8be3===_0xeshc0){_0xz4i34.textContent="\x2705\x20\x43\x6f\x72\x72\x65\x63\x74\x21";_0xz4i34.style.color="\x23\x32\x32\x63\x35\x35\x65";_0x75351[challengeId]=true;}else{_0xz4i34.textContent="\x274c\x20\x49\x6e\x63\x6f\x72\x72\x65\x63\x74\x2e\x20\x54\x72\x79\x20\x61\x67\x61\x69\x6e\x21";_0xz4i34.style.color="\x23\x66\x38\x37\x31\x37\x31";_0x75351[challengeId]=false;}_0xu0er5();}function _0xu0er5(){if(_0x75351.c1&&_0x75351.c2&&_0x75351.c3&&_0x75351.c4){document.getElementById("\x63\x6f\x6e\x67\x72\x61\x74\x73").style.display="\x62\x6c\x6f\x63\x6b";}else{document.getElementById("\x63\x6f\x6e\x67\x72\x61\x74\x73").style.display="\x6e\x6f\x6e\x65";}}
+const FLAG = "flag{dompac_is_done}";
+
+let solved = {
+c1:false,
+c2:false,
+c3:false,
+c4:false
+};
+
+function checkFlag(challengeId){
+
+const input = document.getElementById(challengeId).value.trim().toLowerCase();
+const result = document.getElementById('r'+challengeId[1]);
+
+if(input === FLAG){
+
+result.textContent="✅ Correct!";
+result.style.color="#22c55e";
+solved[challengeId]=true;
+
+}else{
+
+result.textContent="❌ Incorrect. Try again!";
+result.style.color="#f87171";
+solved[challengeId]=false;
+
+}
+
+checkAllSolved();
+}
+
+function checkAllSolved(){
+
+if(solved.c1 && solved.c2 && solved.c3 && solved.c4){
+
+document.getElementById("congrats").style.display="block";
+
+}else{
+
+document.getElementById("congrats").style.display="none";
+
+}
+
+}
