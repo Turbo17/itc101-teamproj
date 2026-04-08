@@ -165,30 +165,83 @@ function pencil() {
   <script>
     
   function triggerPunishment() {
-    if (Math.random() < 0.5) {
-      window.location.href = "https://tinyurl.com/2s4fu32u";
-    } else {
-      const audio = new Audio("https://turbo17.github.io/itc101-CTF/Clown.mp3");
-      audio.loop = false;
-      audio.play();
+      if (Math.random() < 0.5) {
+        window.location.href = "https://tinyurl.com/2s4fu32u";
+      } else {
+        const audio = new Audio("https://turbo17.github.io/itc101-CTF/Clown.mp3");
+        audio.play();
 
-      alert("Nice try clown 🤡");
+        alert("Nice try clown 🤡");
+
+        for (let i = 0; i < 10; i++) {
+          spawnBouncingClown();
+        }
+      }
+    }
+
+    setInterval(() => {
+      if (window.outerHeight - window.innerHeight > 100) {
+        triggerPunishment();
+      }
+    }, 500);
+
+    document.addEventListener("keydown", e => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+        triggerPunishment();
+      }
+    });
+
+    document.addEventListener("contextmenu", e => {
+      e.preventDefault();
+      alert("Nice try, I already thought of that.");
+    });
+
 
       const container = document.createElement("div");
       container.className = "emoji-rain";
       document.body.appendChild(container);
 
-      const clownInterval = setInterval(() => {
-        const clown = document.createElement("div");
-        clown.className = "emoji falling";
-        clown.textContent = "🤡";
-        clown.style.left = Math.random() * 100 + "vw";
-        container.appendChild(clown);
+       function spawnBouncingClown() {
+      const clown = document.createElement("div");
+      clown.className = "emoji";
+      clown.textContent = "🤡";
+      clown.style.left = Math.random() * window.innerWidth + "px";
+      clown.style.top = Math.random() * window.innerHeight + "px";
+      document.body.appendChild(clown);
 
-        setTimeout(() => {
-          clown.remove();
-        }, 4500);
-      }, 100);
+      let x = parseFloat(clown.style.left);
+      let y = parseFloat(clown.style.top);
+      let dx = (Math.random() * 2 - 1) * 6;
+      let dy = (Math.random() * 2 - 1) * 6;
+
+      function animate() {
+        x += dx;
+        y += dy;
+
+        if (x <= 0 || x >= window.innerWidth - 40) {
+          dx = -dx;
+          screenShake();
+        }
+        if (y <= 0 || y >= window.innerHeight - 40) {
+          dy = -dy;
+          screenShake();
+        }
+
+        clown.style.left = x + "px";
+        clown.style.top = y + "px";
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+      setTimeout(() => clown.remove(), 5000);
+    }
+
 
       const bounceLaughs = [];
       for (let i = 0; i < 10; i++) {
@@ -227,6 +280,30 @@ function pencil() {
       }, 4500);
     }
   }
+
+    function screenShake() {
+      const intensity = 6;
+      const duration = 150;
+      const start = performance.now();
+
+      function shakeFrame(t) {
+        const elapsed = t - start;
+        if (elapsed > duration) {
+          document.body.style.transform = "";
+          return;
+        }
+
+        const x = (Math.random() - 0.5) * intensity;
+        const y = (Math.random() - 0.5) * intensity;
+
+        document.body.style.transform = `translate(${x}px, ${y}px)`;
+        requestAnimationFrame(shakeFrame);
+      }
+
+      requestAnimationFrame(shakeFrame);
+    }
+
+
 
   setInterval(() => {
     if (window.outerHeight - window.innerHeight > 100) {
