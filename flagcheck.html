@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flag Checker</title>
-  <link rel="stylesheet" href="style.css" />
+
   <style>
     body {
       margin: 0;
@@ -12,6 +12,7 @@
       font-family: sans-serif;
       background-color: #0a0f1c;
       color: #e6f1ff;
+      overflow-x: hidden;
     }
 
     .a1 {
@@ -73,8 +74,15 @@
     #d7.beta {
       color: #ff6b6b;
     }
+
+    .emoji {
+      position: fixed;
+      font-size: 40px;
+      pointer-events: none;
+    }
   </style>
 </head>
+
 <body>
   <div class="a1">
     <div class="b2" id="flagBox">
@@ -85,128 +93,82 @@
     </div>
   </div>
 
-  <!-- Confetti script -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
-    const elephant = [
-  125, 115, 116, 97, 111, 95, 102, 111, 95, 122, 
-  101, 104, 99, 110, 117, 98, 95, 121, 101, 110, 
-  111, 104, 123, 102, 116, 99
-];
+    const core = [12, 55, 91, 22, 5, 88, 19, 3, 77, 41, 9, 14, 99, 120, 33, 7, 18, 66, 42, 11, 90, 24, 8, 101, 73];
 
-const candle = Array.from({ length: elephant.length }, (_, i) => elephant.length - 1 - i);
-
-function bucket(q, r) {
-  return r.map(i => q[i]).map(x => String.fromCharCode(x)).join('');
-}
-
-function pencil() {
-  const car_keys = document.getElementById("x3").value.trim();
-  const fork = document.getElementById("d7");
-  const flagBox = document.getElementById("flagBox");
-  const light = bucket(elephant, candle);
-
-  if (car_keys === light) {
-    fork.textContent = "✔️ Correct Flag!";
-    fork.className = "alpha";
-    flagBox.classList.add("glow");
-
-    const button = document.querySelector("button");
-    const rect = button.getBoundingClientRect();
-
-    confetti({
-      origin: {
-        x: (rect.left + rect.width / 2) / window.innerWidth,
-        y: (rect.top + rect.height / 2) / window.innerHeight
-      },
-      particleCount: 100,
-      spread: 80,
-      startVelocity: 45,
-      scalar: 1
-    });
-
-    setTimeout(() => {
-      flagBox.classList.remove("glow");
-    }, 3000);
-
-  } else {
-    fork.textContent = "❌ Incorrect Flag.";
-    fork.className = "beta";
-  }
-}
-
-    const drawer = "464c41477b46524f475f46414b455f464c41477d";
-    const mug = [102, 108, 97, 103, 95, 102, 114, 111, 103];
-
-    function shelf(g) {
-      return g.split('').map((c, i) => String.fromCharCode(c.charCodeAt(0) ^ (i % 5))).join('');
+    function twist(a) {
+      return a.map((v, i) => (v ^ (i * 13 + 7)) & 0xFF);
     }
 
-    function rug(b) {
-      return /^#[0-9A-F]{6}$/i.test(b) && b.length === 7;
+    function swirl(a) {
+      return a.map((v, i) => a[(i * 7) % a.length] ^ ((i + 5) * 11));
     }
 
-    function radio(v) {
-      return v.map(b => (b + 42) % 256).filter((_, i) => i % 2 === 0).reverse();
+    function decodeFlag() {
+      const stage1 = twist(core);
+      const stage2 = swirl(stage1);
+      return stage2.map(v => String.fromCharCode((v % 26) + 97)).join('');
     }
 
-    const curtain = v => {
-      let s = "";
-      for (let i = 0; i < v.length; i++) {
-        s += String.fromCharCode(v.charCodeAt(i) + (i % 3));
-      }
-      return s.split("").reverse().join("");
-    };
+    const REAL_FLAG = decodeFlag();
 
-    const battery = shelf(drawer);
-    const hammer = radio(mug);
-  </script>
-  <script>
-    
-  function triggerPunishment() {
-      if (Math.random() < 0.5) {
-        window.location.href = "https://tinyurl.com/2s4fu32u";
+    function pencil() {
+      const input = document.getElementById("x3").value.trim();
+      const fork = document.getElementById("d7");
+      const flagBox = document.getElementById("flagBox");
+
+      if (input === REAL_FLAG) {
+        fork.textContent = "✔️ Correct Flag!";
+        fork.className = "alpha";
+        flagBox.classList.add("glow");
+
+        const button = document.querySelector("button");
+        const rect = button.getBoundingClientRect();
+
+        confetti({
+          origin: {
+            x: (rect.left + rect.width / 2) / window.innerWidth,
+            y: (rect.top + rect.height / 2) / window.innerHeight
+          },
+          particleCount: 100,
+          spread: 80,
+          startVelocity: 45,
+          scalar: 1
+        });
+
+        setTimeout(() => flagBox.classList.remove("glow"), 3000);
       } else {
-        const audio = new Audio("https://turbo17.github.io/itc101-CTF/Clown.mp3");
-        audio.play();
-
-        alert("Nice try clown 🤡");
-
-        for (let i = 0; i < 10; i++) {
-          spawnBouncingClown();
-        }
+        fork.textContent = "❌ Incorrect Flag.";
+        fork.className = "beta";
       }
     }
 
-    setInterval(() => {
-      if (window.outerHeight - window.innerHeight > 100) {
-        triggerPunishment();
+    function screenShake() {
+      const intensity = 6;
+      const duration = 150;
+      const start = performance.now();
+
+      function shakeFrame(t) {
+        const elapsed = t - start;
+        if (elapsed > duration) {
+          document.body.style.transform = "";
+          return;
+        }
+
+        const x = (Math.random() - 0.5) * intensity;
+        const y = (Math.random() - 0.5) * intensity;
+
+        document.body.style.transform = `translate(${x}px, ${y}px)`;
+        requestAnimationFrame(shakeFrame);
       }
-    }, 500);
 
-    document.addEventListener("keydown", e => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
-        (e.ctrlKey && e.key === "U")
-      ) {
-        e.preventDefault();
-        triggerPunishment();
-      }
-    });
-
-    document.addEventListener("contextmenu", e => {
-      e.preventDefault();
-      alert("Nice try, I already thought of that.");
-    });
+      requestAnimationFrame(shakeFrame);
+    }
 
 
-      const container = document.createElement("div");
-      container.className = "emoji-rain";
-      document.body.appendChild(container);
-
-       function spawnBouncingClown() {
+    function spawnBouncingClown() {
       const clown = document.createElement("div");
       clown.className = "emoji";
       clown.textContent = "🤡";
@@ -242,92 +204,42 @@ function pencil() {
       setTimeout(() => clown.remove(), 5000);
     }
 
+    function triggerPunishment() {
+      if (Math.random() < 0.5) {
+        window.location.href = "https://tinyurl.com/2s4fu32u";
+      } else {
+        const audio = new Audio("https://turbo17.github.io/itc101-CTF/Clown.mp3");
+        audio.play();
 
-      const bounceLaughs = [];
-      for (let i = 0; i < 10; i++) {
-        const laugh = document.createElement("div");
-        laugh.className = "emoji";
-        laugh.textContent = "😂";
-        laugh.style.left = Math.random() * 150 + "vw";
-        laugh.style.top = Math.random() * 150 + "vh";
-        container.appendChild(laugh);
-        bounceLaughs.push(laugh);
+        alert("Nice try clown 🤡");
 
-        let dx = (Math.random() * 2 - 1) * 50;
-        let dy = (Math.random() * 2 - 1) * 50;
-
-        const bounceInterval = setInterval(() => {
-          const rect = laugh.getBoundingClientRect();
-          let x = rect.left + dx;
-          let y = rect.top + dy;
-
-          if (x < 0 || x > window.innerWidth - 30) dx = -dx;
-          if (y < 0 || y > window.innerHeight - 30) dy = -dy;
-
-          laugh.style.left = x + "px";
-          laugh.style.top = y + "px";
-        }, 30);
-
-        setTimeout(() => {
-          clearInterval(bounceInterval);
-          laugh.remove();
-        }, 4500);
-      }
-
-      setTimeout(() => {
-        clearInterval(clownInterval);
-        container.remove();
-      }, 4500);
-    }
-  }
-
-    function screenShake() {
-      const intensity = 6;
-      const duration = 150;
-      const start = performance.now();
-
-      function shakeFrame(t) {
-        const elapsed = t - start;
-        if (elapsed > duration) {
-          document.body.style.transform = "";
-          return;
+        for (let i = 0; i < 10; i++) {
+          spawnBouncingClown();
         }
-
-        const x = (Math.random() - 0.5) * intensity;
-        const y = (Math.random() - 0.5) * intensity;
-
-        document.body.style.transform = `translate(${x}px, ${y}px)`;
-        requestAnimationFrame(shakeFrame);
       }
-
-      requestAnimationFrame(shakeFrame);
     }
 
+    setInterval(() => {
+      if (window.outerHeight - window.innerHeight > 100) {
+        triggerPunishment();
+      }
+    }, 500);
 
+    document.addEventListener("keydown", e => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+        triggerPunishment();
+      }
+    });
 
-  setInterval(() => {
-    if (window.outerHeight - window.innerHeight > 100) {
-      triggerPunishment();
-    }
-  }, 500);
-
-  document.addEventListener("keydown", function (e) {
-    if (
-      e.key === "F12" ||
-      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
-      (e.ctrlKey && e.key === "U")
-    ) {
+    document.addEventListener("contextmenu", e => {
       e.preventDefault();
-      triggerPunishment();
-    }
-  });
-
-  document.addEventListener("contextmenu", function (e) {
-    e.preventDefault();
-    alert("Nice try, I already thought of that.");
-  });
+      alert("Nice try, I already thought of that.");
+    });
   </script>
 </body>
 </html>
-
-
