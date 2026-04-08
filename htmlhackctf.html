@@ -34,7 +34,6 @@
 
   .container { max-width: 760px; margin: 0 auto; }
 
-  /* Header */
   .header {
     text-align: center;
     margin-bottom: 3rem;
@@ -72,7 +71,6 @@
   }
   .score-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
 
-  /* Challenges */
   .challenge {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -190,7 +188,6 @@
   .msg.ok { color: var(--green); }
   .msg.err { color: var(--red); }
 
-  /* Special challenge elements */
   #invisible-text {
     color: var(--dark);
     background: var(--dark);
@@ -198,19 +195,6 @@
     margin-top: 0.5rem;
     user-select: none;
     letter-spacing: 0.02em;
-  }
-
-  #fake-btn {
-    display: inline-block;
-    margin-top: 0.75rem;
-    background: rgba(255,170,0,0.1);
-    border: 1px solid rgba(255,170,0,0.3);
-    color: var(--amber);
-    padding: 6px 14px;
-    font-size: 0.78rem;
-    cursor: pointer;
-    border-radius: 2px;
-    font-family: 'Share Tech Mono', monospace;
   }
 
   code {
@@ -221,7 +205,6 @@
     font-size: 0.85em;
   }
 
-  /* Win screen */
   #win-screen {
     display: none;
     text-align: center;
@@ -238,6 +221,21 @@
   }
 
   #win-screen p { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
+
+  #next-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: var(--green);
+    border: 1px solid var(--dim-green);
+    padding: 10px 24px;
+    border-radius: 2px;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: background 0.2s;
+  }
+  #next-link:hover { background: rgba(0,255,136,0.1); }
 
   .footer {
     text-align: center;
@@ -271,88 +269,21 @@
         <div class="score-label">POINTS</div>
       </div>
       <div class="score-item">
-        <div class="score-num">6</div>
+        <div class="score-num">3</div>
         <div class="score-label">TOTAL</div>
       </div>
     </div>
   </div>
 
-  <!-- CHALLENGE 1 -->
-  <div class="challenge" id="ch-1" style="animation-delay:0.1s">
-    <div class="ch-header" onclick="toggle(1)">
-      <span class="ch-num">01</span>
-      <span class="ch-title">inspector gadget</span>
-      <span class="ch-pts">100 pts</span>
-      <span class="ch-status" id="st-1">[ unsolved ]</span>
-    </div>
-    <div class="ch-body" id="body-1">
-      <p class="ch-desc">
-        Every webpage has hidden structure. Open DevTools (F12 or right-click → Inspect),
-        go to the <strong>Elements</strong> tab, and hunt through the HTML.
-        Find an element with a secret <code>data-</code> attribute.
-      </p>
-      <div class="hint-box">hint: look for an element with id="vault" deep in the DOM</div>
-      <div class="flag-row">
-        <input type="text" id="f1" placeholder="CTF{...}" />
-        <button onclick="submit(1)">submit</button>
-      </div>
-      <p class="msg" id="m1"></p>
-    </div>
-  </div>
-
-  <!-- CHALLENGE 2 -->
-  <div class="challenge" id="ch-2" style="animation-delay:0.2s">
-    <div class="ch-header" onclick="toggle(2)">
-      <span class="ch-num">02</span>
-      <span class="ch-title">console cowboy</span>
-      <span class="ch-pts">100 pts</span>
-      <span class="ch-status" id="st-2">[ unsolved ]</span>
-    </div>
-    <div class="ch-body" id="body-2">
-      <p class="ch-desc">
-        Open the browser Console (F12 → Console tab). A function is waiting for you.
-        Call it to retrieve the flag.
-      </p>
-      <div class="hint-box">hint: type <code>getFlag()</code> in the console and press enter</div>
-      <div class="flag-row">
-        <input type="text" id="f2" placeholder="CTF{...}" />
-        <button onclick="submit(2)">submit</button>
-      </div>
-      <p class="msg" id="m2"></p>
-    </div>
-  </div>
-
-  <!-- CHALLENGE 3 -->
-  <div class="challenge" id="ch-3" style="animation-delay:0.3s">
-    <div class="ch-header" onclick="toggle(3)">
-      <span class="ch-num">03</span>
-      <span class="ch-title">comment section</span>
-      <span class="ch-pts">150 pts</span>
-      <span class="ch-status" id="st-3">[ unsolved ]</span>
-    </div>
-    <div class="ch-body" id="body-3">
-      <p class="ch-desc">
-        Developers sometimes leave notes in the source code they forget to remove.
-        View the raw page source (Ctrl+U or Cmd+U) and search for something suspicious.
-      </p>
-      <div class="hint-box">hint: use Ctrl+F in the source view to search for "CTF{"</div>
-      <div class="flag-row">
-        <input type="text" id="f3" placeholder="CTF{...}" />
-        <button onclick="submit(3)">submit</button>
-      </div>
-      <p class="msg" id="m3"></p>
-    </div>
-  </div>
-
   <!-- CHALLENGE 4 -->
-  <div class="challenge" id="ch-4" style="animation-delay:0.4s">
+  <div class="challenge" id="ch-4" style="animation-delay:0.1s">
     <div class="ch-header" onclick="toggle(4)">
-      <span class="ch-num">04</span>
+      <span class="ch-num">01</span>
       <span class="ch-title">style detective</span>
       <span class="ch-pts">150 pts</span>
       <span class="ch-status" id="st-4">[ unsolved ]</span>
     </div>
-    <div class="ch-body" id="body-4">
+    <div class="ch-body open" id="body-4">
       <p class="ch-desc">
         CSS can hide things from plain sight — but not from DevTools.
         There's text below that's been made invisible. Find it in the Elements panel
@@ -369,9 +300,9 @@
   </div>
 
   <!-- CHALLENGE 5 -->
-  <div class="challenge" id="ch-5" style="animation-delay:0.5s">
+  <div class="challenge" id="ch-5" style="animation-delay:0.2s">
     <div class="ch-header" onclick="toggle(5)">
-      <span class="ch-num">05</span>
+      <span class="ch-num">02</span>
       <span class="ch-title">meta spy</span>
       <span class="ch-pts">200 pts</span>
       <span class="ch-status" id="st-5">[ unsolved ]</span>
@@ -392,9 +323,9 @@
   </div>
 
   <!-- CHALLENGE 6 -->
-  <div class="challenge" id="ch-6" style="animation-delay:0.6s">
+  <div class="challenge" id="ch-6" style="animation-delay:0.3s">
     <div class="ch-header" onclick="toggle(6)">
-      <span class="ch-num">06</span>
+      <span class="ch-num">03</span>
       <span class="ch-title">storage hoarder</span>
       <span class="ch-pts">300 pts</span>
       <span class="ch-status" id="st-6">[ unsolved ]</span>
@@ -415,36 +346,25 @@
 
   <div id="win-screen">
     <h2>// ACCESS GRANTED</h2>
-    <p>you've solved all 6 challenges.<br>1000 points. full system access. you're in.<br><br>
-    <span style="color:var(--green)">share this file with friends and see who can solve it fastest.</span></p>
+    <p>you've solved all 3 challenges.<br>650 points. full system access. you're in.<br><br>
+    <span style="color:var(--green)">ready for the next level?</span></p>
+    <a id="next-link" href="https://turbo17.github.io/itc101-teamproj/jared-ctf/index-jared.html" target="_blank">&gt;&gt; proceed to next stage</a>
   </div>
 
   <div class="footer">hack_ctf &mdash; open source &mdash; share freely</div>
 
 </div>
 
-<!-- CHALLENGE 1 VAULT -->
-<div id="vault" data-flag="CTF{d4ta_4ttr1but3_h4ck3r}" style="display:none" aria-hidden="true"></div>
-
 <script>
   localStorage.setItem('top_secret', 'CTF{l0c4l_st0r4g3_n1nj4}');
 
-  window.getFlag = function() {
-    var f = 'CTF{c0ns0l3_c0wb0y_r1d3s_4g41n}';
-    console.log('%c ' + f + ' ', 'background:#0a0f0a;color:#00ff88;font-family:monospace;font-size:15px;padding:6px 12px;border:1px solid #00aa55;');
-    return f;
-  };
-
   var FLAGS = {
-    1: 'CTF{d4ta_4ttr1but3_h4ck3r}',
-    2: 'CTF{c0ns0l3_c0wb0y_r1d3s_4g41n}',
-    3: 'CTF{html_c0mm3nt_d1gg3r}',
     4: 'CTF{css_c4nt_h1d3_fr0m_m3}',
     5: 'CTF{m3ta_tag_spy}',
     6: 'CTF{l0c4l_st0r4g3_n1nj4}'
   };
 
-  var PTS = { 1:100, 2:100, 3:150, 4:150, 5:200, 6:300 };
+  var PTS = { 4:150, 5:200, 6:300 };
   var solved = {};
 
   function toggle(n) {
@@ -482,10 +402,11 @@
     for (var k in solved) pts += PTS[k];
     document.getElementById('solved-count').textContent = count;
     document.getElementById('total-pts').textContent = pts;
-    if (count === 6) {
+    if (count === 3) {
       setTimeout(function() {
-        document.getElementById('win-screen').style.display = 'block';
-        document.getElementById('win-screen').scrollIntoView({ behavior: 'smooth' });
+        var ws = document.getElementById('win-screen');
+        ws.style.display = 'block';
+        ws.scrollIntoView({ behavior: 'smooth' });
       }, 600);
     }
   }
@@ -498,8 +419,6 @@
       }
     });
   });
-
-  toggle(1);
 </script>
 </body>
 </html>
