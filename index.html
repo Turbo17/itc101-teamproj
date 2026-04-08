@@ -8,85 +8,111 @@
 </head>
 
 <body>
-<script>
-  if (sessionStorage.getItem("authenticated") !== "true") {
-      const glitchDiv = document.createElement('div');
-      glitchDiv.className = 'glitch-effect';
-      glitchDiv.innerText = 'ACCESS DENIED';
-      document.body.appendChild(glitchDiv);
 
-      setTimeout(() => {
-        document.body.innerHTML = `
-          <style>
-            body {
-              background-color: #0a0f1c;
-              color: #e6f1ff;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 100vh;
-              font-family: monospace;
-              text-align: center;
-              margin: 0;
-            }
-            .error-box {
-              background-color: #1e2e3f;
-              padding: 2rem;
-              border-radius: 12px;
-              box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-            }
-          </style>
-          <div class='error-box'>
-            <h1>Error 403: Forbidden</h1>
-            <p>Nice try, buddy. But you're not authorized to be here... yet.</p>
-            <p><a href="login.html" style="color:#50fa7b;">Return to Login</a></p>
-          </div>
-        `;
-      }, 1500);
-    }
-  
-</script> 
+<script>
+if (sessionStorage.getItem("authenticated") !== "true") {
+
+const glitchDiv = document.createElement('div');
+glitchDiv.className = 'glitch-effect';
+glitchDiv.innerText = 'ACCESS DENIED';
+document.body.appendChild(glitchDiv);
+
+setTimeout(() => {
+document.body.innerHTML = `
+<div class='error-box'>
+<h1>Error 403: Forbidden</h1>
+<p>Nice try, buddy. But you're not authorized to be here... yet.</p>
+<p><a href="login.html">Return to Login</a></p>
+</div>
+`;
+},1500);
+
+}
+</script>
+
 <h1>🔐 Welcome to the Crypto CTF!</h1>
 <p>Find the flag by solving these crypto challenges.</p>
 
+<p>Solved: <span id="score">0</span>/4</p>
+
 <div class="challenge">
+
 <h2>Challenge 1: Caesar Cipher</h2>
-<p>Encrypted message: <code>iodj{grpsdf_lv_grqh}</code></p>
-<p class="hint">Hint: Shift letters by 3</p>
+
+<p>Encrypted message:
+<code>iodj{grpsdf_lv_grqh}</code>
+</p>
+
+<p class="hint">Hint: Roman emperor encryption.</p>
+
 <input type="text" id="c1" placeholder="Enter the flag">
 <button onclick="checkFlag('c1')">Submit</button>
+
 <p class="result" id="r1"></p>
+
 </div>
 
 <div class="challenge">
+
 <h2>Challenge 2: Base64</h2>
-<p>Encoded message: <code>ZmxhZ3tkb21wYWNfaXNfZG9uZX0=</code></p>
-<p class="hint">Hint: Decode using Base64</p>
+
+<p>Encoded message:
+<code>ZmxhZ3tkb21wYWNfaXNfZG9uZX0=</code>
+</p>
+
+<p class="hint">Hint: Common web encoding.</p>
+
 <input type="text" id="c2" placeholder="Enter the flag">
 <button onclick="checkFlag('c2')">Submit</button>
+
 <p class="result" id="r2"></p>
+
 </div>
 
 <div class="challenge">
+
 <h2>Challenge 3: Reverse String</h2>
-<p>Reversed message: <code>}enod_si_capmod{galf</code></p>
-<p class="hint">Hint: Reverse the string</p>
+
+<p>Reversed message:
+<code>}enod_si_capmod{galf</code>
+</p>
+
+<p class="hint">Hint: Flip the text.</p>
+
 <input type="text" id="c3" placeholder="Enter the flag">
 <button onclick="checkFlag('c3')">Submit</button>
+
 <p class="result" id="r3"></p>
+
 </div>
 
 <div class="challenge">
+
 <h2>Challenge 4: Hex</h2>
-<p>Hex message: <code>666c61677b646f6d7061635f69735f646f6e657d</code></p>
-<p class="hint">Hint: Convert from hexadecimal to text</p>
+
+<p>Hex message:
+<code>666c61677b646f6d7061635f69735f646f6e657d</code>
+</p>
+
+<p class="hint">Hint: Convert hexadecimal to text.</p>
+
 <input type="text" id="c4" placeholder="Enter the flag">
 <button onclick="checkFlag('c4')">Submit</button>
+
 <p class="result" id="r4"></p>
+
 </div>
 
 <div id="congrats" style="display:none;">
+
 <h2>🎉 Congratulations! You solved all the challenges!</h2>
+
+<p>Proceed to the next challenge:</p>
+
+<a href="https://turbo17.github.io/itc101-teamproj/htmlhackctf">
+<button id="nextChallenge">Go to HTML Hack CTF →</button>
+</a>
+
 </div>
 
 <script src="script.js"></script>
