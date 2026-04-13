@@ -209,8 +209,208 @@
     }
 
     /* ══════════════════════════════════
-       FOOTER
+       FLAG CHECKER
     ══════════════════════════════════ */
+    .flag-checker-section {
+      position: relative;
+      z-index: 1;
+      padding: 100px 24px 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(20,5,0,0.35) 50%, rgba(0,0,0,0) 100%);
+    }
+
+    .flag-checker-inner {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .flag-checker-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(to bottom, #ffffff 0%, #ffcc88 50%, #ff6600 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 14px rgba(255,120,30,0.55));
+      margin-bottom: 14px;
+    }
+
+    .flag-checker-sub {
+      color: #8eaac8;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+      letter-spacing: 0.05em;
+    }
+
+    .flag-input-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .flag-input {
+      flex: 1 1 280px;
+      max-width: 380px;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,69,0,0.45);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      color: #eef;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.08em;
+    }
+
+    .flag-input::placeholder { color: rgba(150,170,200,0.35); }
+
+    .flag-input:focus {
+      border-color: rgba(255,140,0,0.8);
+      box-shadow: 0 0 0 3px rgba(255,80,0,0.18), 0 0 20px rgba(255,80,0,0.15);
+    }
+
+    .flag-submit-btn {
+      flex: 0 0 auto;
+      background: linear-gradient(135deg, #cc2200 0%, #ff5500 50%, #ffaa00 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 14px 32px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: transform 0.15s, filter 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(255,60,0,0.35);
+    }
+
+    .flag-submit-btn:hover {
+      transform: translateY(-2px) scale(1.04);
+      filter: brightness(1.12);
+      box-shadow: 0 8px 30px rgba(255,80,0,0.5);
+    }
+
+    .flag-submit-btn:active { transform: translateY(0) scale(0.98); }
+
+    .flag-result {
+      margin-top: 24px;
+      min-height: 40px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      transition: opacity 0.3s;
+    }
+
+    .flag-result.wrong {
+      color: #ff3333;
+      filter: drop-shadow(0 0 8px rgba(255,0,0,0.5));
+      animation: shake 0.4s ease;
+    }
+
+    .flag-result.correct {
+      color: #ffdd00;
+      filter: drop-shadow(0 0 12px rgba(255,220,0,0.7));
+      font-size: clamp(1rem, 3vw, 1.4rem);
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-5px); }
+      80%      { transform: translateX(5px); }
+    }
+
+    /* ══════════════════════════════════
+       CONFETTI OVERLAY
+    ══════════════════════════════════ */
+    #confetti-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    #win-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      text-align: center;
+      padding: 32px;
+    }
+
+    #win-overlay.visible { display: flex; }
+
+    .win-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 8vw, 5rem);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      background: linear-gradient(to top, #fff700 0%, #ff9900 30%, #ff4500 60%, #ffcc00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: flicker 1.5s ease-in-out infinite, zoomIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;
+      margin-bottom: 20px;
+      line-height: 1.15;
+    }
+
+    .win-flag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.85rem, 2.5vw, 1.2rem);
+      color: #88ffcc;
+      background: rgba(0,255,128,0.08);
+      border: 1px solid rgba(0,255,128,0.3);
+      border-radius: 8px;
+      padding: 12px 28px;
+      letter-spacing: 0.12em;
+      margin-bottom: 32px;
+      animation: zoomIn 0.6s 0.2s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+
+    .win-close-btn {
+      background: transparent;
+      border: 1.5px solid rgba(255,140,0,0.6);
+      border-radius: 8px;
+      padding: 12px 36px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: rgba(255,180,60,0.85);
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+      animation: zoomIn 0.6s 0.35s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+
+    .win-close-btn:hover {
+      background: rgba(255,100,0,0.18);
+      color: #ffcc00;
+    }
+
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
     footer {
       position: relative;
       z-index: 1;
@@ -255,6 +455,22 @@
       <p style="margin-top:12px">Four guardians stand watch. Only one has the answer. Solve their riddles to find where the secret lies</p>
       <div class="warning-bar">
         ⚠️ &nbsp;WARNING: Only one of the download buttons is safe. The other three contain malware.
+      </div>
+      <div class="flag-checker-inner" style="margin-top:28px;">
+        <div class="flag-checker-title">⚑ &nbsp;SUBMIT YOUR FLAG&nbsp; ⚑</div>
+        <p class="flag-checker-sub">Solved all four riddles? Enter the flag below.</p>
+        <div class="flag-input-row">
+          <input
+            id="flag-input"
+            class="flag-input"
+            type="text"
+            placeholder="ctf{...}"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="flag-submit-btn" onclick="checkFlag()">SUBMIT</button>
+        </div>
+        <div id="flag-result" class="flag-result" aria-live="polite"></div>
       </div>
     </div>
     <div class="scroll-hint">▼ &nbsp; Enter if you dare &nbsp; ▼</div>
@@ -389,6 +605,129 @@
       requestAnimationFrame(loop);
     }
     loop();
+  </script>
+  <!-- Confetti canvas -->
+  <canvas id="confetti-overlay"></canvas>
+
+  <!-- Win overlay -->
+  <div id="win-overlay" role="dialog" aria-modal="true" aria-label="Victory">
+    <div class="win-title">🏆 CONGRATULATIONS! 🏆</div>
+    <div class="win-flag">ctf{honey_bunchez_of_oats}</div>
+    <button class="win-close-btn" onclick="closeWin()">Close</button>
+  </div>
+
+  <script>
+    /* ── FLAG CHECKER ── */
+    const CORRECT_FLAG = 'ctf{honey_bunchez_of_oats}';
+
+    function checkFlag() {
+      const input = document.getElementById('flag-input').value.trim();
+      const result = document.getElementById('flag-result');
+      result.className = 'flag-result';
+
+      if (input === CORRECT_FLAG) {
+        result.className = 'flag-result correct';
+        result.textContent = '✔ CORRECT FLAG — YOU WIN!';
+        setTimeout(launchCelebration, 120);
+      } else if (input === '') {
+        result.className = 'flag-result wrong';
+        result.textContent = '✖ Enter a flag first.';
+      } else {
+        result.className = 'flag-result wrong';
+        result.textContent = '✖ WRONG FLAG. Keep trying.';
+      }
+    }
+
+    document.getElementById('flag-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkFlag();
+    });
+
+    /* ── CONFETTI ENGINE ── */
+    const cc = document.getElementById('confetti-overlay');
+    const ccx = cc.getContext('2d');
+    let confettiPieces = [];
+    let confettiActive = false;
+    let confettiFrame = null;
+
+    const COLORS = [
+      '#ff4500','#ff7700','#ffcc00','#ffe566',
+      '#ff2244','#ff88bb','#00ffcc','#44ddff',
+      '#ffffff','#ffaa33','#88ff44'
+    ];
+
+    class Piece {
+      constructor() { this.reset(true); }
+      reset(fromTop) {
+        this.x     = Math.random() * cc.width;
+        this.y     = fromTop ? -Math.random() * cc.height * 0.5 : -20;
+        this.w     = 7 + Math.random() * 12;
+        this.h     = 4 + Math.random() * 6;
+        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        this.angle = Math.random() * Math.PI * 2;
+        this.spin  = (Math.random() - 0.5) * 0.25;
+        this.vy    = 2.5 + Math.random() * 3.5;
+        this.vx    = (Math.random() - 0.5) * 2.2;
+        this.alpha = 1;
+        this.shape = Math.random() < 0.5 ? 'rect' : 'circle';
+      }
+      update() {
+        this.y    += this.vy;
+        this.x    += this.vx + Math.sin(this.y * 0.02) * 0.6;
+        this.angle += this.spin;
+        if (this.y > cc.height + 20) this.reset(false);
+      }
+      draw() {
+        ccx.save();
+        ccx.translate(this.x, this.y);
+        ccx.rotate(this.angle);
+        ccx.globalAlpha = this.alpha;
+        ccx.fillStyle = this.color;
+        if (this.shape === 'rect') {
+          ccx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
+        } else {
+          ccx.beginPath();
+          ccx.arc(0, 0, this.w / 2, 0, Math.PI * 2);
+          ccx.fill();
+        }
+        ccx.restore();
+      }
+    }
+
+    function resizeCC() {
+      cc.width  = window.innerWidth;
+      cc.height = window.innerHeight;
+    }
+    resizeCC();
+    window.addEventListener('resize', resizeCC);
+
+    function confettiLoop() {
+      ccx.clearRect(0, 0, cc.width, cc.height);
+      for (const p of confettiPieces) { p.update(); p.draw(); }
+      if (confettiActive) {
+        confettiFrame = requestAnimationFrame(confettiLoop);
+      } else {
+        ccx.clearRect(0, 0, cc.width, cc.height);
+      }
+    }
+
+    function launchCelebration() {
+      // spawn lots of pieces
+      confettiPieces = Array.from({ length: 260 }, () => new Piece());
+      confettiActive = true;
+      if (confettiFrame) cancelAnimationFrame(confettiFrame);
+      confettiLoop();
+
+      // show win modal
+      document.getElementById('win-overlay').classList.add('visible');
+
+      // auto-stop confetti after 7 seconds
+      setTimeout(() => { confettiActive = false; }, 7000);
+    }
+
+    function closeWin() {
+      document.getElementById('win-overlay').classList.remove('visible');
+      confettiActive = false;
+    }
   </script>
 </body>
 </html>
